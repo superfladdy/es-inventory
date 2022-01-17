@@ -4,23 +4,26 @@ import './App.css';
 
 import { Amplify } from 'aws-amplify';
 
-import { Authenticator } from '@aws-amplify/ui-react';
+//import { Authenticator } from '@aws-amplify/ui-react';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
 import awsExports from './aws-exports';
 Amplify.configure(awsExports);
-console.log(awsExports);
 
-function App() {
-  
+function App({ isPassedToWithAuthenticator, signOut, user }) {
+  //if (!isPassedToWithAuthenticator) {
+  //  throw new Error(`isPassedToWithAuthenticator was not provided`);
+  //}
+
   return (
-    <Authenticator>
-      {({ signOut, user }) => (
+    // <Authenticator>
+    //  {({ signOut, user }) => (
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
             <p>
-              <h1>Hello</h1>
+              <h1>Hello {user.username}</h1>
             </p>
             <a
               className="App-link"
@@ -30,12 +33,22 @@ function App() {
             >
               Learn React
             </a>
+            <p><button onClick={signOut}>Sign out</button></p>
           </header>
-          <button onClick={signOut}>Sign out</button>
+          
         </div>
-      )}
-    </Authenticator>
+    //  )}
+    //</Authenticator>
   );
 }
 
-export default App;
+//export default App;
+export default withAuthenticator(App);
+
+export async function getStaticProps() {
+  return {
+    props: {
+      isPassedToWithAuthenticator: true,
+    },
+  };
+}
